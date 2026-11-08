@@ -336,6 +336,7 @@
       background: rgba(255,255,255,.06); color: var(--muted);
     }
     .news-tag.upcoming { color: #facc15; background: rgba(250,204,21,.1); }
+    .news-tag.launch { color: var(--accent); background: rgba(74,222,128,.1); }
     .news-item h3 { font-family: var(--font-head); font-weight: 400; font-size: 1.45rem; margin-bottom: 8px; }
     .news-item p { color: var(--muted); line-height: 1.7; word-break: keep-all; }
     @media (max-width: 600px) { .news-item { grid-template-columns: 1fr; gap: 8px; } }
@@ -511,11 +512,35 @@
           </div>
         </li>
         <li class="news-item">
-          <div class="news-date">2026.11</div>
+          <div class="news-date">2026.11.08</div>
+          <div>
+            <span class="news-tag" data-i18n="nTagDev">개발</span>
+            <h3 data-i18n="n4t">NOVA 엔진 구성 변경</h3>
+            <p data-i18n="n4d">NOVA의 엔진 개수와 마운트 설계를 수정했습니다. 소형 엔진 3개와 대형 엔진 1개를 묶는 클러스터링 방식으로 비행합니다.</p>
+          </div>
+        </li>
+        <li class="news-item">
+          <div class="news-date">2026.11.07</div>
           <div>
             <span class="news-tag" data-i18n="nTagNews">소식</span>
             <h3 data-i18n="n2t">공식 사이트 새 단장</h3>
             <p data-i18n="n2d">tspace.kro.kr을 새로 만들었습니다. 이제 한국어와 영어로 볼 수 있습니다.</p>
+          </div>
+        </li>
+        <li class="news-item">
+          <div class="news-date">2025.12.13</div>
+          <div>
+            <span class="news-tag launch" data-i18n="nTagLaunch">발사</span>
+            <h3 data-i18n="n5t">SpinV 마지막 발사 (F9)</h3>
+            <p data-i18n="n5d">SpinV의 아홉 번째이자 마지막 발사를 진행했습니다.</p>
+          </div>
+        </li>
+        <li class="news-item">
+          <div class="news-date">2024.12.27</div>
+          <div>
+            <span class="news-tag launch" data-i18n="nTagLaunch">발사</span>
+            <h3 data-i18n="n6t">SpinV 첫 발사 성공 (F5)</h3>
+            <p data-i18n="n6d">다섯 번째 비행에서 SpinV가 처음으로 발사에 성공했습니다.</p>
           </div>
         </li>
         <li class="news-item">
@@ -570,7 +595,7 @@
   <script>
     // 한국어 / English 전환
     (function () {
-      var DICT = { ko: {"about1": "TSPACE는 2023년 12월에 만들어졌으며, 로켓 설계부터 제작, 발사까지 직접 합니다.", "about2": "첫 로켓 <strong>SpinV</strong>는 총 9번 발사를 진행했고, 5번째 비행에서 처음 성공했습니다.", "about3": "두 번째 로켓 <strong>NOVA</strong>는 현재 개발 중이며, 2027년 2월 첫 발사 예정입니다.", "cap1": "F8 발사", "cap2": "점화 순간", "cap3": "F5 · 첫 발사 성공", "cap4": "NOVA 엔진 연소 시험", "tagDone": "● 개발 완료", "tagDev": "● 개발 중", "spinDesc": "개발을 마친 첫 번째 로켓입니다. 지금까지 총 9번 발사했고, 5번째 비행(F5)에서 첫 발사 성공을 거뒀습니다.", "stLaunchN": "9회", "stLaunch": "총 발사", "stFirst": "첫 발사 성공", "stAlt": "최대 고도", "novaDesc": "SpinV보다 엔진은 3배 강하고 크기는 2배 커진 두 번째 로켓입니다. 지금 개발 중입니다.", "stEngine": "엔진 출력", "stTarget": "목표 최대 고도", "stPlan": "첫 발사 예정", "nTagUp": "예정", "nTagNews": "소식", "n1t": "NOVA 첫 발사 예정", "n1d": "두 번째 로켓 NOVA의 첫 발사를 2027년 2월에 할 예정입니다. 지금 개발 중입니다.", "n2t": "공식 사이트 새 단장", "n2d": "tspace.kro.kr을 새로 만들었습니다. 이제 한국어와 영어로 볼 수 있습니다.", "n3t": "TSPACE 시작", "n3d": "로켓 설계부터 제작, 발사까지 직접 하는 TSPACE를 시작했습니다."}, en: {"about1": "TSPACE was started in December 2023 and handles everything from rocket design to building and launching.", "about2": "The first rocket, <strong>SpinV</strong>, has launched 9 times and flew successfully for the first time on its 5th flight.", "about3": "The second rocket, <strong>NOVA</strong>, is currently in development, with its first launch planned for February 2027.", "cap1": "F8 launch", "cap2": "Ignition", "cap3": "F5 · First successful launch", "cap4": "NOVA engine test fire", "tagDone": "● Completed", "tagDev": "● In development", "spinDesc": "The first completed rocket. It has launched 9 times in total, with its first successful flight on F5, the 5th flight.", "stLaunchN": "9", "stLaunch": "Launches", "stFirst": "First success", "stAlt": "Max altitude", "novaDesc": "The second rocket, with an engine 3× more powerful and a body twice the size of SpinV. Currently in development.", "stEngine": "Engine power", "stTarget": "Target altitude", "stPlan": "First launch", "nTagUp": "Upcoming", "nTagNews": "News", "n1t": "NOVA first launch planned", "n1d": "The first launch of our second rocket, NOVA, is planned for February 2027. It is currently in development.", "n2t": "Website relaunched", "n2d": "We rebuilt tspace.kro.kr. It is now available in Korean and English.", "n3t": "TSPACE begins", "n3d": "TSPACE started, handling everything from rocket design to building and launching."} };
+      var DICT = { ko: {"about1": "TSPACE는 2023년 12월에 만들어졌으며, 로켓 설계부터 제작, 발사까지 직접 합니다.", "about2": "첫 로켓 <strong>SpinV</strong>는 총 9번 발사를 진행했고, 5번째 비행에서 처음 성공했습니다.", "about3": "두 번째 로켓 <strong>NOVA</strong>는 현재 개발 중이며, 2027년 2월 첫 발사 예정입니다.", "cap1": "F8 발사", "cap2": "점화 순간", "cap3": "F5 · 첫 발사 성공", "cap4": "NOVA 엔진 연소 시험", "tagDone": "● 개발 완료", "tagDev": "● 개발 중", "spinDesc": "개발을 마친 첫 번째 로켓입니다. 지금까지 총 9번 발사했고, 5번째 비행(F5)에서 첫 발사 성공을 거뒀습니다.", "stLaunchN": "9회", "stLaunch": "총 발사", "stFirst": "첫 발사 성공", "stAlt": "최대 고도", "novaDesc": "SpinV보다 엔진은 3배 강하고 크기는 2배 커진 두 번째 로켓입니다. 지금 개발 중입니다.", "stEngine": "엔진 출력", "stTarget": "목표 최대 고도", "stPlan": "첫 발사 예정", "nTagUp": "예정", "nTagNews": "소식", "n1t": "NOVA 첫 발사 예정", "n1d": "두 번째 로켓 NOVA의 첫 발사를 2027년 2월에 할 예정입니다. 지금 개발 중입니다.", "n2t": "공식 사이트 새 단장", "n2d": "tspace.kro.kr을 새로 만들었습니다. 이제 한국어와 영어로 볼 수 있습니다.", "n3t": "TSPACE 시작", "n3d": "로켓 설계부터 제작, 발사까지 직접 하는 TSPACE를 시작했습니다.", "nTagDev": "개발", "nTagLaunch": "발사", "n4t": "NOVA 엔진 구성 변경", "n4d": "NOVA의 엔진 개수와 마운트 설계를 수정했습니다. 소형 엔진 3개와 대형 엔진 1개를 묶는 클러스터링 방식으로 비행합니다.", "n5t": "SpinV 마지막 발사 (F9)", "n5d": "SpinV의 아홉 번째이자 마지막 발사를 진행했습니다.", "n6t": "SpinV 첫 발사 성공 (F5)", "n6d": "다섯 번째 비행에서 SpinV가 처음으로 발사에 성공했습니다."}, en: {"about1": "TSPACE was started in December 2023 and handles everything from rocket design to building and launching.", "about2": "The first rocket, <strong>SpinV</strong>, has launched 9 times and flew successfully for the first time on its 5th flight.", "about3": "The second rocket, <strong>NOVA</strong>, is currently in development, with its first launch planned for February 2027.", "cap1": "F8 launch", "cap2": "Ignition", "cap3": "F5 · First successful launch", "cap4": "NOVA engine test fire", "tagDone": "● Completed", "tagDev": "● In development", "spinDesc": "The first completed rocket. It has launched 9 times in total, with its first successful flight on F5, the 5th flight.", "stLaunchN": "9", "stLaunch": "Launches", "stFirst": "First success", "stAlt": "Max altitude", "novaDesc": "The second rocket, with an engine 3× more powerful and a body twice the size of SpinV. Currently in development.", "stEngine": "Engine power", "stTarget": "Target altitude", "stPlan": "First launch", "nTagUp": "Upcoming", "nTagNews": "News", "n1t": "NOVA first launch planned", "n1d": "The first launch of our second rocket, NOVA, is planned for February 2027. It is currently in development.", "n2t": "Website relaunched", "n2d": "We rebuilt tspace.kro.kr. It is now available in Korean and English.", "n3t": "TSPACE begins", "n3d": "TSPACE started, handling everything from rocket design to building and launching.", "nTagDev": "Development", "nTagLaunch": "Launch", "n4t": "NOVA engine layout updated", "n4d": "We revised NOVA's engine count and mount design. It now flies with a cluster of three small engines and one large engine.", "n5t": "SpinV final launch (F9)", "n5d": "SpinV made its ninth and final launch.", "n6t": "SpinV first successful launch (F5)", "n6d": "SpinV flew successfully for the first time on its fifth flight."} };
       function setLang(lang) {
         if (!DICT[lang]) lang = 'ko';
         document.documentElement.lang = lang;
