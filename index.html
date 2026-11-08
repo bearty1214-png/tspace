@@ -314,6 +314,32 @@
     .stat span { font-size: .78rem; color: var(--muted); }
     .rocket-grid.two { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); max-width: 1000px; }
 
+    /* ====== NEWS ====== */
+    .news {
+      padding: clamp(80px, 12vw, 160px) clamp(16px, 6vw, 80px);
+      border-top: 1px solid var(--line);
+    }
+    .news-head { text-align: center; margin-bottom: 56px; }
+    .news-head .label { font-size: .8rem; letter-spacing: .3em; color: var(--accent); margin-bottom: 20px; }
+    .news-head h2 { font-family: var(--font-head); font-size: clamp(2rem, 5vw, 3.25rem); }
+    .news-list { max-width: 820px; margin: 0 auto; list-style: none; }
+    .news-item {
+      display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 24px;
+      padding: 28px 0; border-top: 1px solid var(--line);
+    }
+    .news-item:last-child { border-bottom: 1px solid var(--line); }
+    .news-date { font-variant-numeric: tabular-nums; color: var(--muted); font-size: .95rem; padding-top: 4px; letter-spacing: .04em; }
+    .news-tag {
+      display: inline-block; margin-bottom: 12px;
+      font-size: .72rem; font-weight: 600; letter-spacing: .08em;
+      padding: 5px 10px; border-radius: 9999px;
+      background: rgba(255,255,255,.06); color: var(--muted);
+    }
+    .news-tag.upcoming { color: #facc15; background: rgba(250,204,21,.1); }
+    .news-item h3 { font-family: var(--font-head); font-weight: 400; font-size: 1.45rem; margin-bottom: 8px; }
+    .news-item p { color: var(--muted); line-height: 1.7; word-break: keep-all; }
+    @media (max-width: 600px) { .news-item { grid-template-columns: 1fr; gap: 8px; } }
+
     /* ====== 푸터 ====== */
     .footer {
       border-top: 1px solid var(--line);
@@ -371,6 +397,7 @@
     <nav class="nav">
       <a href="#about">ABOUT</a>
       <a href="#rockets">ROCKETS</a>
+      <a href="#news">NEWS</a>
     </nav>
     <div class="lang" role="group" aria-label="Language">
       <button type="button" data-set-lang="ko">KO</button>
@@ -386,6 +413,7 @@
   <div class="mobile-menu">
     <a href="#about">ABOUT</a>
     <a href="#rockets">ROCKETS</a>
+    <a href="#news">NEWS</a>
   </div>
 
   <main>
@@ -467,6 +495,39 @@
         </article>
       </div>
     </section>
+    <!-- NEWS -->
+    <section class="news" id="news">
+      <div class="news-head">
+        <div class="label">NEWS</div>
+        <h2>News</h2>
+      </div>
+      <ul class="news-list">
+        <li class="news-item">
+          <div class="news-date">2027.02</div>
+          <div>
+            <span class="news-tag upcoming" data-i18n="nTagUp">예정</span>
+            <h3 data-i18n="n1t">NOVA 첫 발사 예정</h3>
+            <p data-i18n="n1d">두 번째 로켓 NOVA의 첫 발사를 2027년 2월에 할 예정입니다. 지금 개발 중입니다.</p>
+          </div>
+        </li>
+        <li class="news-item">
+          <div class="news-date">2026.11</div>
+          <div>
+            <span class="news-tag" data-i18n="nTagNews">소식</span>
+            <h3 data-i18n="n2t">공식 사이트 새 단장</h3>
+            <p data-i18n="n2d">tspace.kro.kr을 새로 만들었습니다. 이제 한국어와 영어로 볼 수 있습니다.</p>
+          </div>
+        </li>
+        <li class="news-item">
+          <div class="news-date">2023.12</div>
+          <div>
+            <span class="news-tag" data-i18n="nTagNews">소식</span>
+            <h3 data-i18n="n3t">TSPACE 시작</h3>
+            <p data-i18n="n3d">로켓 설계부터 제작, 발사까지 직접 하는 TSPACE를 시작했습니다.</p>
+          </div>
+        </li>
+      </ul>
+    </section>
   </main>
 
   <!-- 푸터 -->
@@ -478,6 +539,7 @@
       <nav class="footer-nav">
         <a href="#about">ABOUT</a>
         <a href="#rockets">ROCKETS</a>
+        <a href="#news">NEWS</a>
       </nav>
       <div class="socials">
         <a href="https://www.instagram.com/kds.space/" target="_blank" rel="noopener" aria-label="Instagram">
@@ -508,7 +570,7 @@
   <script>
     // 한국어 / English 전환
     (function () {
-      var DICT = { ko: {"about1": "TSPACE는 2023년 12월에 만들어졌으며, 로켓 설계부터 제작, 발사까지 직접 합니다.", "about2": "첫 로켓 <strong>SpinV</strong>는 총 9번 발사를 진행했고, 5번째 비행에서 처음 성공했습니다.", "about3": "두 번째 로켓 <strong>NOVA</strong>는 현재 개발 중이며, 2027년 2월 첫 발사 예정입니다.", "cap1": "F8 발사", "cap2": "점화 순간", "cap3": "F5 · 첫 발사 성공", "cap4": "NOVA 엔진 연소 시험", "tagDone": "● 개발 완료", "tagDev": "● 개발 중", "spinDesc": "개발을 마친 첫 번째 로켓입니다. 지금까지 총 9번 발사했고, 5번째 비행(F5)에서 첫 발사 성공을 거뒀습니다.", "stLaunchN": "9회", "stLaunch": "총 발사", "stFirst": "첫 발사 성공", "stAlt": "최대 고도", "novaDesc": "SpinV보다 엔진은 3배 강하고 크기는 2배 커진 두 번째 로켓입니다. 지금 개발 중입니다.", "stEngine": "엔진 출력", "stTarget": "목표 최대 고도", "stPlan": "첫 발사 예정"}, en: {"about1": "TSPACE was started in December 2023 and handles everything from rocket design to building and launching.", "about2": "The first rocket, <strong>SpinV</strong>, has launched 9 times and flew successfully for the first time on its 5th flight.", "about3": "The second rocket, <strong>NOVA</strong>, is currently in development, with its first launch planned for February 2027.", "cap1": "F8 launch", "cap2": "Ignition", "cap3": "F5 · First successful launch", "cap4": "NOVA engine test fire", "tagDone": "● Completed", "tagDev": "● In development", "spinDesc": "The first completed rocket. It has launched 9 times in total, with its first successful flight on F5, the 5th flight.", "stLaunchN": "9", "stLaunch": "Launches", "stFirst": "First success", "stAlt": "Max altitude", "novaDesc": "The second rocket, with an engine 3× more powerful and a body twice the size of SpinV. Currently in development.", "stEngine": "Engine power", "stTarget": "Target altitude", "stPlan": "First launch"} };
+      var DICT = { ko: {"about1": "TSPACE는 2023년 12월에 만들어졌으며, 로켓 설계부터 제작, 발사까지 직접 합니다.", "about2": "첫 로켓 <strong>SpinV</strong>는 총 9번 발사를 진행했고, 5번째 비행에서 처음 성공했습니다.", "about3": "두 번째 로켓 <strong>NOVA</strong>는 현재 개발 중이며, 2027년 2월 첫 발사 예정입니다.", "cap1": "F8 발사", "cap2": "점화 순간", "cap3": "F5 · 첫 발사 성공", "cap4": "NOVA 엔진 연소 시험", "tagDone": "● 개발 완료", "tagDev": "● 개발 중", "spinDesc": "개발을 마친 첫 번째 로켓입니다. 지금까지 총 9번 발사했고, 5번째 비행(F5)에서 첫 발사 성공을 거뒀습니다.", "stLaunchN": "9회", "stLaunch": "총 발사", "stFirst": "첫 발사 성공", "stAlt": "최대 고도", "novaDesc": "SpinV보다 엔진은 3배 강하고 크기는 2배 커진 두 번째 로켓입니다. 지금 개발 중입니다.", "stEngine": "엔진 출력", "stTarget": "목표 최대 고도", "stPlan": "첫 발사 예정", "nTagUp": "예정", "nTagNews": "소식", "n1t": "NOVA 첫 발사 예정", "n1d": "두 번째 로켓 NOVA의 첫 발사를 2027년 2월에 할 예정입니다. 지금 개발 중입니다.", "n2t": "공식 사이트 새 단장", "n2d": "tspace.kro.kr을 새로 만들었습니다. 이제 한국어와 영어로 볼 수 있습니다.", "n3t": "TSPACE 시작", "n3d": "로켓 설계부터 제작, 발사까지 직접 하는 TSPACE를 시작했습니다."}, en: {"about1": "TSPACE was started in December 2023 and handles everything from rocket design to building and launching.", "about2": "The first rocket, <strong>SpinV</strong>, has launched 9 times and flew successfully for the first time on its 5th flight.", "about3": "The second rocket, <strong>NOVA</strong>, is currently in development, with its first launch planned for February 2027.", "cap1": "F8 launch", "cap2": "Ignition", "cap3": "F5 · First successful launch", "cap4": "NOVA engine test fire", "tagDone": "● Completed", "tagDev": "● In development", "spinDesc": "The first completed rocket. It has launched 9 times in total, with its first successful flight on F5, the 5th flight.", "stLaunchN": "9", "stLaunch": "Launches", "stFirst": "First success", "stAlt": "Max altitude", "novaDesc": "The second rocket, with an engine 3× more powerful and a body twice the size of SpinV. Currently in development.", "stEngine": "Engine power", "stTarget": "Target altitude", "stPlan": "First launch", "nTagUp": "Upcoming", "nTagNews": "News", "n1t": "NOVA first launch planned", "n1d": "The first launch of our second rocket, NOVA, is planned for February 2027. It is currently in development.", "n2t": "Website relaunched", "n2d": "We rebuilt tspace.kro.kr. It is now available in Korean and English.", "n3t": "TSPACE begins", "n3d": "TSPACE started, handling everything from rocket design to building and launching."} };
       function setLang(lang) {
         if (!DICT[lang]) lang = 'ko';
         document.documentElement.lang = lang;
