@@ -730,23 +730,40 @@
     }
 
     async function makeLabel(THREE, renderer) {
-      // 검은 띠(body2)에서 바깥으로 보이는 구간, 핀 사이(45°) 정면
-      const Y0 = 0.17, Y1 = 0.3057, R = 0.02515, SPAN = 60, MID = 45;
-      const len = Y1 - Y0, arc = R * THREE.MathUtils.degToRad(SPAN);
-      const W = 320, H = Math.round(W * len / arc);
+      // 검은 띠(body2) 구간, 핀 사이(45°) 정면. Onshape 데칼처럼 정면에서 평평하게 보이도록 투영해서 감쌌
+      const Y0 = 0.17, Y1 = 0.33, R = 0.02515, SPAN = 80, MID = 45, PX = 9000;
+      const len = Y1 - Y0, half = THREE.MathUtils.degToRad(SPAN / 2), chord = R * Math.sin(half);
+      const H = Math.round(len * PX), Wp = Math.round(2 * chord * PX), W = Math.round(R * 2 * half * PX);
+      // 1) 정면 평면 그림
+      const P = document.createElement('canvas'); P.width = Wp; P.height = H;
+      const g = P.getContext('2d');
+      try {
+        if (!document.querySelector('link[data-nunito]')) {
+          const l = document.createElement('link'); l.rel = 'stylesheet'; l.dataset.nunito = '1';
+          l.href = 'https://fonts.googleapis.com/css2?family=Nunito:wght@900&display=swap&text=NOVA';
+          document.head.appendChild(l);
+          await new Promise(r => { l.onload = r; l.onerror = r; setTimeout(r, 3000); });
+        }
+        await document.fonts.load('900 100px Nunito', 'NOVA');
+      } catch (err) {}
+      const fh = 0.114 * H, fw = fh * 1.5;
+      drawFlag(g, (Wp - fw) / 2, 0.125 * H, fw, fh);
+      g.fillStyle = '#fff'; g.textAlign = 'center'; g.textBaseline = 'alphabetic';
+      const cap = 0.0149 * PX, fs = cap / 0.705;
+      g.font = '900 ' + Math.round(fs) + 'px Nunito, "Arial Rounded MT Bold", Arial, sans-serif';
+      [['N', 0.396], ['O', 0.551], ['V', 0.708], ['A', 0.868]].forEach(([c, p]) => g.fillText(c, Wp / 2, H * p));
+      // 2) 원통 둘레로 펼친 그림으로 변환
       const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
-      const g = cv.getContext('2d');
-      try { await document.fonts.load('600 100px Inter'); } catch (e) {}
-      g.translate(W, 0); g.rotate(Math.PI / 2);
-      const fw = H * 0.16, fh = fw * 2 / 3;
-      drawFlag(g, H * 0.065, (W - fh) / 2, fw, fh);
-      g.fillStyle = '#fff'; g.textAlign = 'center'; g.textBaseline = 'middle';
-      g.font = '600 ' + Math.round(W * 0.56) + 'px Inter, Arial, sans-serif';
-      [['N', 0.335], ['O', 0.505], ['V', 0.66], ['A', 0.785]].forEach(([c, p]) => g.fillText(c, H * p, W / 2));
+      const k = cv.getContext('2d');
+      for (let i = 0; i < W; i++) {
+        const th = ((i + 0.5) / W - 0.5) * 2 * half;
+        const xp = (Math.sin(th) / Math.sin(half)) * (Wp / 2) + Wp / 2;
+        k.drawImage(P, Math.min(Wp - 1, Math.max(0, Math.floor(xp))), 0, 1, H, i, 0, 1, H);
+      }
       const tex = new THREE.CanvasTexture(cv);
       tex.colorSpace = THREE.SRGBColorSpace;
       tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
-      const geo = new THREE.CylinderGeometry(R, R, len, 64, 1, true, THREE.MathUtils.degToRad(MID - SPAN / 2), THREE.MathUtils.degToRad(SPAN));
+      const geo = new THREE.CylinderGeometry(R, R, len, 96, 1, true, THREE.MathUtils.degToRad(MID) - half, 2 * half);
       const mat = new THREE.MeshStandardMaterial({ map: tex, transparent: true, roughness: 0.9, metalness: 0, polygonOffset: true, polygonOffsetFactor: -2 });
       const mesh = new THREE.Mesh(geo, mat);
       mesh.position.y = (Y0 + Y1) / 2;
