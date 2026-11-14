@@ -367,6 +367,41 @@
     .mission-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
     @media (max-width: 760px) { .mission-card { grid-template-columns: 1fr; } .mission-img { min-height: 0; aspect-ratio: 16 / 10; } }
 
+    /* ====== 3D 뷰어 ====== */
+    .btn-3d {
+      display: inline-flex; align-items: center; gap: 8px; margin-top: 18px;
+      padding: 11px 16px; border-radius: 9999px; border: 1px solid rgba(255,255,255,.3);
+      background: transparent; color: #fff; font: 600 .88rem/1 var(--font-body); cursor: pointer;
+      transition: background .2s, border-color .2s;
+    }
+    .btn-3d:hover { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.55); }
+    .btn-3d:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    .btn-3d svg { width: 16px; height: 16px; }
+    .v3d {
+      margin: auto; padding: 0; border: 1px solid var(--line); border-radius: 18px; overflow: hidden;
+      width: min(960px, calc(100% - 24px)); height: min(760px, calc(100% - 48px));
+      background: radial-gradient(circle at 50% 40%, #1b1d22, #050506 75%); color: #fff;
+    }
+    .v3d::backdrop { background: rgba(0,0,0,.75); backdrop-filter: blur(4px); }
+    .v3d-wrap { position: relative; width: 100%; height: 100%; }
+    .v3d-stage { position: absolute; inset: 0; touch-action: none; cursor: grab; }
+    .v3d-stage:active { cursor: grabbing; }
+    .v3d-stage canvas { display: block; width: 100% !important; height: 100% !important; }
+    .v3d-top { position: absolute; top: 0; left: 0; right: 0; display: flex; align-items: center; justify-content: space-between; padding: 16px 16px 0 22px; pointer-events: none; }
+    .v3d-top h3 { font-family: var(--font-head); font-weight: 400; font-size: 1.6rem; }
+    .v3d-top span { display: block; font-size: .75rem; letter-spacing: .2em; color: var(--accent); margin-bottom: 4px; }
+    .v3d-close, .v3d-reset {
+      pointer-events: auto; border: 0; cursor: pointer; color: #fff; background: rgba(255,255,255,.08);
+      backdrop-filter: blur(6px); border-radius: 9999px; font: 600 .82rem var(--font-body);
+    }
+    .v3d-close { width: 40px; height: 40px; font-size: 1rem; }
+    .v3d-close:hover, .v3d-reset:hover { background: rgba(255,255,255,.16); }
+    .v3d-close:focus-visible, .v3d-reset:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .v3d-bottom { position: absolute; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 16px 16px 22px; pointer-events: none; }
+    .v3d-hint { font-size: .82rem; color: var(--muted); word-break: keep-all; }
+    .v3d-reset { padding: 10px 14px; white-space: nowrap; }
+    .v3d-status { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; padding: 24px; color: var(--muted); font-size: .95rem; pointer-events: none; }
+
     /* ====== 푸터 ====== */
     .footer {
       border-top: 1px solid var(--line);
@@ -412,6 +447,7 @@
     .mobile-menu { inset: calc(var(--header-h) + env(safe-area-inset-top, 0px)) 0 0 0; }
   </style>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"TSPACE","alternateName":["tspace","티스페이스"],"url":"https://tspace.kro.kr/"}</script>
+  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 </head>
 <body>
 
@@ -520,6 +556,7 @@
               <div class="stat"><b>150m</b><span data-i18n="stTarget">목표 최대 고도</span></div>
               <div class="stat"><b>2027.02</b><span data-i18n="stPlan">첫 발사 예정</span></div>
             </div>
+            <button type="button" class="btn-3d" data-open-3d><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M12 2 3 7v10l9 5 9-5V7z"/><path d="M3 7l9 5 9-5M12 12v10"/></svg><span data-i18n="v3d">3D로 보기</span></button>
           </div>
         </article>
       </div>
@@ -546,6 +583,21 @@
       </article>
     </section>
   </main>
+
+  <dialog class="v3d" id="v3d" aria-labelledby="v3d-title">
+    <div class="v3d-wrap">
+      <div class="v3d-stage" id="v3d-stage"></div>
+      <div class="v3d-status" id="v3d-status" data-i18n="v3dLoad">3D 모델 불러오는 중…</div>
+      <div class="v3d-top">
+        <div><span>ROCKET 02</span><h3 id="v3d-title">NOVA</h3></div>
+        <button type="button" class="v3d-close" aria-label="닫기">✕</button>
+      </div>
+      <div class="v3d-bottom">
+        <p class="v3d-hint" data-i18n="v3dHint">드래그해서 돌리고, 스크롤이나 두 손가락으로 확대해 보세요.</p>
+        <button type="button" class="v3d-reset" data-i18n="v3dReset">처음 위치로</button>
+      </div>
+    </div>
+  </dialog>
 
   <!-- 푸터 -->
   <footer class="footer">
@@ -588,7 +640,7 @@
   <script>
     // 한국어 / English 전환
     (function () {
-      var DICT = window.TS_DICT = { ko: {"about1":"TSPACE는 2023년 12월에 만들어졌으며, 로켓 설계부터 제작, 발사까지 직접 합니다.","about2":"첫 로켓 <strong>SpinV</strong>는 총 9번 발사를 진행했고, 5번째 비행에서 처음 성공했습니다.","about3":"두 번째 로켓 <strong>NOVA</strong>는 현재 개발 중이며, 2027년 2월 첫 발사 예정입니다.","cap1":"F8 발사","cap2":"점화 순간","cap3":"F5 · 첫 발사 성공","cap4":"NOVA 엔진 연소 시험","tagDone":"● 개발 완료","tagDev":"● 개발 중","spinDesc":"개발을 마친 첫 번째 로켓입니다. 지금까지 총 9번 발사했고, 5번째 비행(F5)에서 첫 발사 성공을 거뒀습니다.","stLaunchN":"9회","stLaunch":"총 발사","stFirst":"첫 발사 성공","stAlt":"최대 고도","novaDesc":"SpinV보다 엔진은 3배 강하고 크기는 2배 커진 두 번째 로켓입니다. 소형 엔진 3개와 대형 엔진 1개를 묶은 클러스터링 방식으로 비행하며, 지금 개발 중입니다.","stEngine":"엔진 출력","stTarget":"목표 최대 고도","stPlan":"첫 발사 예정","nTagUp":"예정","nTagNews":"소식","n1t":"NOVA 첫 발사 예정","n1d":"두 번째 로켓 NOVA의 첫 발사를 2027년 2월에 할 예정입니다. 지금 개발 중입니다.","n2t":"공식 사이트 리뉴얼","n2d":"공식 사이트가 새롭게 리뉴얼 되었습니다.","n3t":"TSPACE 시작","n3d":"TSPACE는 2023년 12월에 만들어졌습니다.","nTagDev":"개발","nTagLaunch":"발사","n4t":"NOVA 엔진 구성 변경","n4d":"NOVA의 엔진 개수와 마운트 설계를 수정했습니다. 소형 엔진 3개와 대형 엔진 1개를 묶는 클러스터링 방식으로 비행합니다.","n5t":"SpinV 마지막 발사 (F9)","n5d":"SpinV의 아홉 번째이자 마지막 발사를 진행했습니다.","n6t":"SpinV 첫 발사 성공 (F5)","n6d":"다섯 번째 비행에서 SpinV가 처음으로 발사에 성공했습니다.","mTag":"다음 발사","mTitle":"NOVA 첫 발사 예정","mDesc":"두 번째 로켓 NOVA의 첫 발사를 2027년 2월에 할 예정입니다. 소형 엔진 3개와 대형 엔진 1개를 묶은 클러스터링 방식으로 목표 고도 150m에 도전합니다.","mEng":"클러스터 엔진","mStatus":"개발 중","mStatusL":"현재 상태","mLink":"소식 전체 보기 →","nMore":"자세히 보기 →","newsSub":"TSPACE의 개발과 발사 소식","n1b":"TSPACE의 두 번째 로켓 NOVA가 2027년 2월 첫 발사를 준비하고 있습니다. NOVA는 SpinV보다 엔진은 3배 강하고 크기는 2배 큽니다. 소형 엔진 3개와 대형 엔진 1개를 묶은 클러스터링 방식으로 비행하며, 목표 최대 고도는 150m입니다.","n4b":"NOVA의 엔진 개수와 마운트 설계를 수정했습니다. 이번 업데이트로 NOVA에는 소형 엔진 3개와 대형 엔진 1개가 장착되며, 여러 엔진을 함께 쓰는 클러스터링 방식으로 발사하고 비행할 수 있게 됐습니다.","n2b":"공식 사이트가 새롭게 리뉴얼 되었습니다.","n5b":"2025년 12월 13일, SpinV의 아홉 번째 비행(F9)을 진행했습니다. F9는 SpinV의 마지막 발사로, SpinV는 총 9번의 발사를 마쳤습니다.","n6b":"2024년 12월 27일, SpinV가 다섯 번째 비행(F5)에서 처음으로 발사에 성공했습니다. 앞선 네 번의 시도 끝에 거둔 첫 성공입니다. SpinV의 최고 고도 기록은 70m입니다.","n3b":"TSPACE는 2023년 12월에 만들어졌습니다."}, en: {"about1":"TSPACE was started in December 2023 and handles everything from rocket design to building and launching.","about2":"The first rocket, <strong>SpinV</strong>, has launched 9 times and flew successfully for the first time on its 5th flight.","about3":"The second rocket, <strong>NOVA</strong>, is currently in development, with its first launch planned for February 2027.","cap1":"F8 launch","cap2":"Ignition","cap3":"F5 · First successful launch","cap4":"NOVA engine test fire","tagDone":"● Completed","tagDev":"● In development","spinDesc":"The first completed rocket. It has launched 9 times in total, with its first successful flight on F5, the 5th flight.","stLaunchN":"9","stLaunch":"Launches","stFirst":"First success","stAlt":"Max altitude","novaDesc":"The second rocket, 3× more powerful and twice the size of SpinV. It flies on a cluster of three small engines and one large engine, and is currently in development.","stEngine":"Engine power","stTarget":"Target altitude","stPlan":"First launch","nTagUp":"Upcoming","nTagNews":"News","n1t":"NOVA first launch planned","n1d":"The first launch of our second rocket, NOVA, is planned for February 2027. It is currently in development.","n2t":"Official website renewed","n2d":"The official website has been renewed.","n3t":"TSPACE begins","n3d":"TSPACE was founded in December 2023.","nTagDev":"Development","nTagLaunch":"Launch","n4t":"NOVA engine layout updated","n4d":"We revised NOVA's engine count and mount design. It now flies with a cluster of three small engines and one large engine.","n5t":"SpinV final launch (F9)","n5d":"SpinV made its ninth and final launch.","n6t":"SpinV first successful launch (F5)","n6d":"SpinV flew successfully for the first time on its fifth flight.","mTag":"Next launch","mTitle":"NOVA first launch","mDesc":"Our second rocket, NOVA, is set for its first launch in February 2027. Flying on a cluster of three small engines and one large engine, it aims for a target altitude of 150 m.","mEng":"Clustered engines","mStatus":"In progress","mStatusL":"Status","mLink":"See all news →","nMore":"Read more →","newsSub":"Development and launch updates from TSPACE","n1b":"TSPACE's second rocket, NOVA, is preparing for its first launch in February 2027. NOVA has engines three times more powerful than SpinV and a body twice the size. It flies on a cluster of three small engines and one large engine, with a target maximum altitude of 150 m.","n4b":"We revised NOVA's engine count and mount design. With this update, NOVA carries three small engines and one large engine, and can launch and fly using a clustered configuration that fires multiple engines together.","n2b":"The official website has been renewed.","n5b":"On December 13, 2025, SpinV made its ninth flight, F9. F9 was SpinV's final launch, bringing its total to nine launches.","n6b":"On December 27, 2024, SpinV flew successfully for the first time on its fifth flight, F5, after four earlier attempts. SpinV's highest recorded altitude is 70 m.","n3b":"TSPACE was founded in December 2023."} };
+      var DICT = window.TS_DICT = { ko: {"about1":"TSPACE는 2023년 12월에 만들어졌으며, 로켓 설계부터 제작, 발사까지 직접 합니다.","about2":"첫 로켓 <strong>SpinV</strong>는 총 9번 발사를 진행했고, 5번째 비행에서 처음 성공했습니다.","about3":"두 번째 로켓 <strong>NOVA</strong>는 현재 개발 중이며, 2027년 2월 첫 발사 예정입니다.","cap1":"F8 발사","cap2":"점화 순간","cap3":"F5 · 첫 발사 성공","cap4":"NOVA 엔진 연소 시험","tagDone":"● 개발 완료","tagDev":"● 개발 중","spinDesc":"개발을 마친 첫 번째 로켓입니다. 지금까지 총 9번 발사했고, 5번째 비행(F5)에서 첫 발사 성공을 거뒀습니다.","stLaunchN":"9회","stLaunch":"총 발사","stFirst":"첫 발사 성공","stAlt":"최대 고도","novaDesc":"SpinV보다 엔진은 3배 강하고 크기는 2배 커진 두 번째 로켓입니다. 소형 엔진 3개와 대형 엔진 1개를 묶은 클러스터링 방식으로 비행하며, 지금 개발 중입니다.","stEngine":"엔진 출력","stTarget":"목표 최대 고도","stPlan":"첫 발사 예정","nTagUp":"예정","nTagNews":"소식","n1t":"NOVA 첫 발사 예정","n1d":"두 번째 로켓 NOVA의 첫 발사를 2027년 2월에 할 예정입니다. 지금 개발 중입니다.","n2t":"공식 사이트 리뉴얼","n2d":"공식 사이트가 새롭게 리뉴얼 되었습니다.","n3t":"TSPACE 시작","n3d":"TSPACE는 2023년 12월에 만들어졌습니다.","nTagDev":"개발","nTagLaunch":"발사","n4t":"NOVA 엔진 구성 변경","n4d":"NOVA의 엔진 개수와 마운트 설계를 수정했습니다. 소형 엔진 3개와 대형 엔진 1개를 묶는 클러스터링 방식으로 비행합니다.","n5t":"SpinV 마지막 발사 (F9)","n5d":"SpinV의 아홉 번째이자 마지막 발사를 진행했습니다.","n6t":"SpinV 첫 발사 성공 (F5)","n6d":"다섯 번째 비행에서 SpinV가 처음으로 발사에 성공했습니다.","mTag":"다음 발사","mTitle":"NOVA 첫 발사 예정","mDesc":"두 번째 로켓 NOVA의 첫 발사를 2027년 2월에 할 예정입니다. 소형 엔진 3개와 대형 엔진 1개를 묶은 클러스터링 방식으로 목표 고도 150m에 도전합니다.","mEng":"클러스터 엔진","mStatus":"개발 중","mStatusL":"현재 상태","mLink":"소식 전체 보기 →","nMore":"자세히 보기 →","newsSub":"TSPACE의 개발과 발사 소식","n1b":"TSPACE의 두 번째 로켓 NOVA가 2027년 2월 첫 발사를 준비하고 있습니다. NOVA는 SpinV보다 엔진은 3배 강하고 크기는 2배 큽니다. 소형 엔진 3개와 대형 엔진 1개를 묶은 클러스터링 방식으로 비행하며, 목표 최대 고도는 150m입니다.","n4b":"NOVA의 엔진 개수와 마운트 설계를 수정했습니다. 이번 업데이트로 NOVA에는 소형 엔진 3개와 대형 엔진 1개가 장착되며, 여러 엔진을 함께 쓰는 클러스터링 방식으로 발사하고 비행할 수 있게 됐습니다.","n2b":"공식 사이트가 새롭게 리뉴얼 되었습니다.","n5b":"2025년 12월 13일, SpinV의 아홉 번째 비행(F9)을 진행했습니다. F9는 SpinV의 마지막 발사로, SpinV는 총 9번의 발사를 마쳤습니다.","n6b":"2024년 12월 27일, SpinV가 다섯 번째 비행(F5)에서 처음으로 발사에 성공했습니다. 앞선 네 번의 시도 끝에 거둔 첫 성공입니다. SpinV의 최고 고도 기록은 70m입니다.","n3b":"TSPACE는 2023년 12월에 만들어졌습니다.","v3d":"3D로 보기","v3dLoad":"3D 모델 불러오는 중…","v3dHint":"드래그해서 돌리고, 스크롤이나 두 손가락으로 확대해 보세요.","v3dReset":"처음 위치로","v3dErr":"3D 모델을 불러오지 못했어요. 잠시 후 다시 시도해 주세요."}, en: {"about1":"TSPACE was started in December 2023 and handles everything from rocket design to building and launching.","about2":"The first rocket, <strong>SpinV</strong>, has launched 9 times and flew successfully for the first time on its 5th flight.","about3":"The second rocket, <strong>NOVA</strong>, is currently in development, with its first launch planned for February 2027.","cap1":"F8 launch","cap2":"Ignition","cap3":"F5 · First successful launch","cap4":"NOVA engine test fire","tagDone":"● Completed","tagDev":"● In development","spinDesc":"The first completed rocket. It has launched 9 times in total, with its first successful flight on F5, the 5th flight.","stLaunchN":"9","stLaunch":"Launches","stFirst":"First success","stAlt":"Max altitude","novaDesc":"The second rocket, 3× more powerful and twice the size of SpinV. It flies on a cluster of three small engines and one large engine, and is currently in development.","stEngine":"Engine power","stTarget":"Target altitude","stPlan":"First launch","nTagUp":"Upcoming","nTagNews":"News","n1t":"NOVA first launch planned","n1d":"The first launch of our second rocket, NOVA, is planned for February 2027. It is currently in development.","n2t":"Official website renewed","n2d":"The official website has been renewed.","n3t":"TSPACE begins","n3d":"TSPACE was founded in December 2023.","nTagDev":"Development","nTagLaunch":"Launch","n4t":"NOVA engine layout updated","n4d":"We revised NOVA's engine count and mount design. It now flies with a cluster of three small engines and one large engine.","n5t":"SpinV final launch (F9)","n5d":"SpinV made its ninth and final launch.","n6t":"SpinV first successful launch (F5)","n6d":"SpinV flew successfully for the first time on its fifth flight.","mTag":"Next launch","mTitle":"NOVA first launch","mDesc":"Our second rocket, NOVA, is set for its first launch in February 2027. Flying on a cluster of three small engines and one large engine, it aims for a target altitude of 150 m.","mEng":"Clustered engines","mStatus":"In progress","mStatusL":"Status","mLink":"See all news →","nMore":"Read more →","newsSub":"Development and launch updates from TSPACE","n1b":"TSPACE's second rocket, NOVA, is preparing for its first launch in February 2027. NOVA has engines three times more powerful than SpinV and a body twice the size. It flies on a cluster of three small engines and one large engine, with a target maximum altitude of 150 m.","n4b":"We revised NOVA's engine count and mount design. With this update, NOVA carries three small engines and one large engine, and can launch and fly using a clustered configuration that fires multiple engines together.","n2b":"The official website has been renewed.","n5b":"On December 13, 2025, SpinV made its ninth flight, F9. F9 was SpinV's final launch, bringing its total to nine launches.","n6b":"On December 27, 2024, SpinV flew successfully for the first time on its fifth flight, F5, after four earlier attempts. SpinV's highest recorded altitude is 70 m.","n3b":"TSPACE was founded in December 2023.","v3d":"View in 3D","v3dLoad":"Loading 3D model…","v3dHint":"Drag to rotate. Scroll or pinch to zoom.","v3dReset":"Reset view","v3dErr":"Couldn't load the 3D model. Please try again shortly."} };
       function setLang(lang) {
         if (!DICT[lang]) lang = 'ko';
         document.documentElement.lang = lang;
@@ -640,6 +692,108 @@
       setTimeout(function () { if (v.readyState < 2) fallback(); }, 2500);
       play();
     })();
+  </script>
+  <script type="module">
+    // NOVA 3D 뷰어 (three.js)
+    const dlg = document.getElementById('v3d');
+    const stage = document.getElementById('v3d-stage');
+    const status = document.getElementById('v3d-status');
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const T = k => { const d = window.TS_DICT || {}, l = document.documentElement.lang || 'ko'; return (d[l] && d[l][k]) || (d.ko && d.ko[k]) || ''; };
+    let v = null, starting = null;
+
+    async function start() {
+      const THREE = await import('three');
+      const { OrbitControls } = await import('three/addons/controls/OrbitControls.js');
+      const { GLTFLoader } = await import('three/addons/loaders/GLTFLoader.js');
+      const { RoomEnvironment } = await import('three/addons/environments/RoomEnvironment.js');
+
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      stage.appendChild(renderer.domElement);
+
+      const scene = new THREE.Scene();
+      const pmrem = new THREE.PMREMGenerator(renderer);
+      scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+      const sun = new THREE.DirectionalLight(0xffffff, 1.4);
+      sun.position.set(1, 2, 1.5);
+      scene.add(sun, new THREE.HemisphereLight(0xffffff, 0x202020, 0.5));
+
+      const camera = new THREE.PerspectiveCamera(35, 1, 0.001, 100);
+      const controls = new OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.enablePan = false;
+      controls.autoRotate = !reduced;
+      controls.autoRotateSpeed = 1.5;
+      controls.addEventListener('start', () => { controls.autoRotate = false; });
+
+      const gltf = await new GLTFLoader().loadAsync('/NOVA.gltf');
+      const model = gltf.scene;
+      const box = new THREE.Box3().setFromObject(model);
+      model.position.sub(box.getCenter(new THREE.Vector3()));
+      scene.add(model);
+
+      const radius = box.getSize(new THREE.Vector3()).length() / 2;
+      const dist = radius / Math.sin(THREE.MathUtils.degToRad(camera.fov / 2)) * 1.05;
+      const home = new THREE.Vector3(0.55, 0.2, 1).normalize().multiplyScalar(dist);
+      camera.position.copy(home);
+      camera.near = dist / 100; camera.far = dist * 20; camera.updateProjectionMatrix();
+      controls.minDistance = radius * 0.6;
+      controls.maxDistance = dist * 3;
+      controls.target.set(0, 0, 0);
+      controls.update();
+
+      function resize() {
+        const w = stage.clientWidth, h = stage.clientHeight;
+        if (!w || !h) return;
+        renderer.setSize(w, h, false);
+        camera.aspect = w / h;
+        const fitV = (box.max.y - box.min.y) / 2 / Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
+        camera.updateProjectionMatrix();
+      }
+      new ResizeObserver(resize).observe(stage);
+      resize();
+
+      v = { renderer, scene, camera, controls, home, raf: 0 };
+      status.hidden = true;
+    }
+
+    function loop() {
+      if (!v || !dlg.open) return;
+      v.controls.update();
+      v.renderer.render(v.scene, v.camera);
+      v.raf = requestAnimationFrame(loop);
+    }
+
+    async function open() {
+      if (!dlg.open) { if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', ''); }
+      if (!v) {
+        status.hidden = false;
+        status.setAttribute('data-i18n', 'v3dLoad'); status.textContent = T('v3dLoad');
+        try { starting = starting || start(); await starting; }
+        catch (e) {
+          console.error(e); starting = null;
+          status.setAttribute('data-i18n', 'v3dErr'); status.textContent = T('v3dErr'); status.hidden = false;
+          return;
+        }
+      }
+      cancelAnimationFrame(v.raf);
+      loop();
+    }
+
+    document.querySelectorAll('[data-open-3d]').forEach(b => b.addEventListener('click', open));
+    dlg.querySelector('.v3d-close').addEventListener('click', () => dlg.close());
+    dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
+    dlg.addEventListener('close', () => { if (v) cancelAnimationFrame(v.raf); });
+    dlg.querySelector('.v3d-reset').addEventListener('click', () => {
+      if (!v) return;
+      v.camera.position.copy(v.home);
+      v.controls.target.set(0, 0, 0);
+      v.controls.autoRotate = !reduced;
+      v.controls.update();
+    });
   </script>
 </body>
 </html>
