@@ -446,6 +446,80 @@
     .footer-bottom a:hover { color: #fff; }
     .header { padding-top: env(safe-area-inset-top, 0px); height: calc(var(--header-h) + env(safe-area-inset-top, 0px)); }
     .mobile-menu { inset: calc(var(--header-h) + env(safe-area-inset-top, 0px)) 0 0 0; }
+
+    /* ====== 스크롤 고도계 ====== */
+    .alt-meter {
+      position: fixed;
+      right: clamp(10px, 1.6vw, 22px);
+      top: calc(var(--header-h) + 36px);
+      bottom: 36px;
+      width: 56px;
+      z-index: 95;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .4s;
+    }
+    .alt-meter.on { opacity: 1; }
+    body.menu-open .alt-meter { opacity: 0; }
+    .alt-track {
+      position: absolute;
+      right: 11px; top: 0; bottom: 0;
+      width: 2px;
+      background: repeating-linear-gradient(to top, rgba(255,255,255,.28) 0 1px, transparent 1px 10%);
+    }
+    .alt-track::before {
+      content: ""; position: absolute; inset: 0;
+      background: rgba(255,255,255,.08);
+    }
+    .alt-fill {
+      position: absolute; left: 0; right: 0; bottom: 0;
+      height: 0;
+      background: var(--accent);
+      box-shadow: 0 0 8px rgba(74,222,128,.6);
+    }
+    .alt-top, .alt-bot {
+      position: absolute; right: 22px;
+      font: 600 10px/1 var(--font-body);
+      letter-spacing: .08em;
+      color: var(--muted);
+    }
+    .alt-top { top: -4px; }
+    .alt-bot { bottom: -4px; }
+    .alt-ship {
+      position: absolute;
+      right: 0; bottom: 0;
+      width: 24px; height: 46px;
+      transform: translateY(0);
+      will-change: transform;
+    }
+    .alt-ship svg { width: 24px; height: 46px; display: block; overflow: visible; }
+    .alt-ship .flame { opacity: 0; transform-origin: 12px 34px; transition: opacity .15s; }
+    .alt-meter.burn .flame { opacity: 1; animation: alt-flicker .09s infinite alternate; }
+    @keyframes alt-flicker { from { transform: scaleY(.75); } to { transform: scaleY(1.15); } }
+    .alt-read {
+      position: absolute;
+      right: 30px; top: 12px;
+      padding: 4px 8px;
+      border: 1px solid rgba(74,222,128,.5);
+      border-radius: 999px;
+      background: rgba(0,0,0,.75);
+      font: 700 12px/1 var(--font-body);
+      font-variant-numeric: tabular-nums;
+      color: var(--accent);
+      white-space: nowrap;
+    }
+    .alt-read small { color: var(--muted); font-weight: 600; margin-right: 4px; font-size: 9px; letter-spacing: .08em; }
+    @media (max-width: 720px) {
+      .alt-meter { width: 40px; right: 6px; top: calc(var(--header-h) + 24px); bottom: 24px; }
+      .alt-top, .alt-bot { display: none; }
+      .alt-read { right: 26px; font-size: 11px; padding: 3px 6px; }
+      .alt-read small { display: none; }
+      .alt-read { opacity: 0; transition: opacity .3s; }
+      .alt-meter.active .alt-read { opacity: 1; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .alt-meter.burn .flame { animation: none; }
+    }
   </style>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"TSPACE","alternateName":["tspace","티스페이스"],"url":"https://tspace.kro.kr/"}</script>
   <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
@@ -870,6 +944,63 @@
       v.controls.autoRotate = !reduced;
       v.controls.update();
     });
+  </script>
+
+  <!-- 스크롤 고도계 -->
+  <div class="alt-meter" id="alt-meter" aria-hidden="true">
+    <span class="alt-top">150m</span>
+    <span class="alt-bot">0m</span>
+    <div class="alt-track"><div class="alt-fill" id="alt-fill"></div></div>
+    <div class="alt-ship" id="alt-ship">
+      <svg viewBox="0 0 24 46">
+        <g class="flame">
+          <path d="M8.5 34 Q12 48 15.5 34 Z" fill="#fb923c"/>
+          <path d="M10 34 Q12 43 14 34 Z" fill="#fde68a"/>
+        </g>
+        <path d="M12 2 C15.5 6 16 11 16 15 V31 H8 V15 C8 11 8.5 6 12 2 Z" fill="#fff"/>
+        <path d="M8 23 L4 31 V34 L8 31 Z M16 23 L20 31 V34 L16 31 Z" fill="#4ade80"/>
+        <rect x="8" y="31" width="8" height="3" fill="#9ca3af"/>
+        <circle cx="12" cy="15" r="2" fill="#000"/>
+      </svg>
+      <span class="alt-read" id="alt-read"><small>ALT</small><b id="alt-num">0</b>m</span>
+    </div>
+  </div>
+  <script>
+  // 스크롤 고도계: 스크롤 위치를 0~150m로 바꿔 보여줌
+  (function () {
+    var MAX = 150;
+    var meter = document.getElementById('alt-meter');
+    var ship = document.getElementById('alt-ship');
+    var fill = document.getElementById('alt-fill');
+    var num = document.getElementById('alt-num');
+    if (!meter) return;
+    var last = -1, burnTimer = null, activeTimer = null, ticking = false;
+    function update() {
+      ticking = false;
+      var doc = document.documentElement;
+      var max = Math.max(1, doc.scrollHeight - window.innerHeight);
+      var p = Math.min(1, Math.max(0, window.scrollY / max));
+      var trackH = meter.clientHeight - ship.offsetHeight;
+      ship.style.transform = 'translateY(' + (-p * trackH).toFixed(1) + 'px)';
+      fill.style.height = (p * 100).toFixed(2) + '%';
+      var alt = Math.round(p * MAX);
+      if (alt !== last) { num.textContent = alt; last = alt; }
+      meter.classList.add('on');
+    }
+    function onScroll() {
+      if (!ticking) { ticking = true; requestAnimationFrame(update); }
+      meter.classList.add('burn');
+      clearTimeout(burnTimer);
+      burnTimer = setTimeout(function () { meter.classList.remove('burn'); }, 160);
+      meter.classList.add('active');
+      clearTimeout(activeTimer);
+      activeTimer = setTimeout(function () { meter.classList.remove('active'); }, 1200);
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', function () { requestAnimationFrame(update); });
+    window.addEventListener('load', update);
+    update();
+  })();
   </script>
 </body>
 </html>
